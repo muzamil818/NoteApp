@@ -28,10 +28,8 @@ const Login = () => {
       setIsLogged(true)
 
       navigate("/");
-    } catch (err: any) {
-      const message =
-        err.response?.data?.message || "Login failed. Please try again.";
-      alert(message);
+    } catch (err) {
+      alert(`something went wrong with login: ${err}` );
       console.error("Server Error:", err);
     }
   };
