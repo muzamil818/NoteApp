@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
+import EditModelNote from "../components/EditModelNote";
+
 
 interface notes{
   _id: string;
@@ -9,9 +12,11 @@ interface notes{
 };
 
 const Notes = () => {
+
   const [notes, setNotes] = useState<notes[]>([]);
   const [title, setTitle] = useState<string>("");
   const [content, setcontent] = useState<string>("");
+  const [editNote, setEditNote]= useState<notes | null>(null)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -79,6 +84,11 @@ const Notes = () => {
         alert(`failed to delete the note: ${err} `)
       }
   }
+  const handleEdit = (update: notes) =>{
+    setNotes((pre)=> (
+      pre.map((n)=> n._id == update._id? update : n)
+    ))
+  }
   return (
     <div className="">
     <div className="flex items-center justify-center mt-16">
@@ -117,10 +127,14 @@ const Notes = () => {
     </div>
     <div className="w-full h-screen bg-[#758A93] pt-10 ">
 
-    <div className="ml-3 flex gap-3 ">
+    <div className="ml-3 flex flex-wrap gap-3  p-16 ">
       {notes.map((note) => (
-        <div  className="w-[300px] h-[300px] bg-gray-800 rounded shadow"  key={note._id}>
-          <h1 className="text-2xl text-center text-white">{note.title}</h1>
+        <div  className="w-[300px] h-[200px] bg-gray-800 relative rounded shadow"  key={note._id}>
+          <FaEdit 
+          className=" absolute right-0 text-[#54aad1] cursor-pointer transition-all text-2xl"
+          onClick={()=> setEditNote(note)}
+          />
+          <h1 className="text-2xl p-3 text-white">{note.title}</h1>
           <p className="text-white p-3">{note.content}</p>
 
           <div className=" mt-3 m-3 items-center justify-center ">
@@ -130,6 +144,10 @@ const Notes = () => {
       ))}
       </div>
           </div>
+
+          {editNote && (
+            <EditModelNote  note={editNote} onUpdate={handleEdit} onClose={()=>setEditNote(null)}/>
+          )}
     </div>
     
   );
