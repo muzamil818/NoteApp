@@ -4,19 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import EditModelNote from "../components/EditModelNote";
 
-
-interface notes{
+interface notes {
   _id: string;
   title: string;
   content: string;
-};
+}
 
 const Notes = () => {
-
   const [notes, setNotes] = useState<notes[]>([]);
   const [title, setTitle] = useState<string>("");
   const [content, setcontent] = useState<string>("");
-  const [editNote, setEditNote]= useState<notes | null>(null)
+  const [editNote, setEditNote] = useState<notes | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,90 +64,106 @@ const Notes = () => {
     }
   };
 
-  const handelDelte = async (id:string) => {
-      const token = localStorage.getItem("token");
-      if(!token) return alert("Please login to Delete the note")
+  const handelDelte = async (id: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("Please login to Delete the note");
 
-      try{
-
-        await axios.delete(`${import.meta.env.VITE_API_URI}/note/${id}`,{
-          headers:{
-            Authorization: `Bearer ${token}`
-          }
-        })
-        setNotes((pre)=> pre.filter((i)=> i._id !== id))
-
-      }catch(err){
-        console.error(`DELETE api/note/delete`, err);
-        alert(`failed to delete the note: ${err} `)
-      }
-  }
-  const handleEdit = (update: notes) =>{
-    setNotes((pre)=> (
-      pre.map((n)=> n._id == update._id? update : n)
-    ))
-  }
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URI}/note/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setNotes((pre) => pre.filter((i) => i._id !== id));
+    } catch (err) {
+      console.error(`DELETE api/note/delete`, err);
+      alert(`failed to delete the note: ${err} `);
+    }
+  };
+  const handleEdit = (update: notes) => {
+    setNotes((pre) => pre.map((n) => (n._id == update._id ? update : n)));
+  };
   return (
     <div className="">
-    <div className="flex items-center justify-center mt-16">
-      <form onSubmit={handelNote}>
-        <div className="*:placeholder:text-[15px] *:text-gray-700 w-[400px] h-[300px] bg-white rounded shadow flex flex-col p-7 gap-6 ">
-          <h1 className="text-center text-3xl"> Notes</h1>
+      <div className="flex items-center justify-center mt-16">
+        <form className="border rounded" onSubmit={handelNote}>
+          <div className="*:placeholder:text-[15px] *:text-gray-700 w-[400px] h-[350px] bg-white rounded border-black shadow flex flex-col p-7 gap-6 ">
+            <h1 className="text-center text-3xl"> Notes</h1>
 
-          <input
-            className="outline-1 px-2 py-4"
-            type="text"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+            <input
+              className="outline-1 px-2 py-4"
+              type="text"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
 
-          <textarea
-            className="outline-1 px-2"
-            name="content"
-            id=""
-            value={content}
-            placeholder="Note content"
-            onChange={(e) => setcontent(e.target.value)}
-          />
+            <textarea
+              className="outline-1 px-2"
+              name="content"
+              id=""
+              value={content}
+              placeholder="Note content"
+              onChange={(e) => setcontent(e.target.value)}
+            />
 
-          <div className=" flex items-center justify-center w-full">
-            <button
-              type="submit"
-              className="rounded px-6 py-2 cursor-pointer shadow bg-sky-200"
-            >
-              Add Note
-            </button>
+            <div className=" flex items-center justify-center w-full">
+              <button
+                type="submit"
+                className="relative z-1 flex h-[30px] w-[100px] items-center justify-center whitespace-nowrap rounded-[10px] border-none bg-transparent px-5 py-5 text-[16px] text-[#f0f0f0] outline-none select-none cursor-pointer 
+  before:content-[''] before:absolute before:bottom-0 before:right-0 before:h-full before:w-full before:rounded-[10px] before:bg-[#28282d] before:transition-all before:duration-400 before:-z-99999
+  after:content-[''] after:absolute after:bottom-0 after:right-0 after:h-[35px] after:w-[35px] after:translate-x-2.5 after:translate-y-2.5 after:rounded-[50px] after:bg-[#ffffff15] after:backdrop-blur-[5px] after:transition-all after:duration-400 after:-z-99999
+  hover:before:translate-x-[5%] hover:before:translate-y-[20%] hover:before:h-[110%] hover:before:w-[110%]
+  hover:after:translate-x-0 hover:after:translate-y-0 hover:after:h-full hover:after:w-full hover:after:rounded-[10px]
+  active:after:translate-y-[5%] active:after:transition-none"
+              >
+                Add Note
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
-
-    </div>
-    <div className="w-full h-screen bg-[#758A93] pt-10 ">
-
-    <div className="ml-3 flex flex-wrap gap-3  p-16 ">
-      {notes.map((note) => (
-        <div  className="w-[300px] h-[200px] bg-gray-800 relative rounded shadow"  key={note._id}>
-          <FaEdit 
-          className=" absolute right-0 text-[#54aad1] cursor-pointer transition-all text-2xl"
-          onClick={()=> setEditNote(note)}
-          />
-          <h1 className="text-2xl p-3 text-white">{note.title}</h1>
-          <p className="text-white p-3">{note.content}</p>
-
-          <div className=" mt-3 m-3 items-center justify-center ">
-          <button className="bg-red-400 py-2 px-6 rounded text-center " onClick={()=>handelDelte(note._id)}>Delete</button>
-          </div>
-        </div>
-      ))}
+        </form>
       </div>
-          </div>
+      {/* bg-[#758A93] */}
+      <div className="  w-full h-screen  pt-10 bg-gray-600 ">
+        <div className="items justify-center ml-3 flex flex-wrap gap-3  p-16 ">
+          {notes.map((note) => (
+            <div
+              className="w-[300px] h-[200px] bg-[#112d3d] relative rounded shadow"
+              key={note._id}
+            >
+              <FaEdit
+                className=" absolute right-0 text-[#54aad1] cursor-pointer transition-all text-2xl"
+                onClick={() => setEditNote(note)}
+              />
+              <h1 className="text-2xl p-3 text-white">{note.title}</h1>
+              <p className="text-white p-3">{note.content}</p>
 
-          {editNote && (
-            <EditModelNote  note={editNote} onUpdate={handleEdit} onClose={()=>setEditNote(null)}/>
-          )}
+              <div className=" mt-3 m-3 items-center justify-center ">
+                <button
+                  className="relative z-1 flex h-[30px] w-[100px] items-center justify-center whitespace-nowrap rounded-[10px] border-none bg-transparent px-5 py-5 text-[16px] text-[#f0f0f0] outline-none select-none cursor-pointer 
+  before:content-[''] before:absolute before:bottom-0 before:right-0 before:h-full before:w-full before:rounded-[10px] before:bg-[#28282d] before:transition-all before:duration-400 before:-z-99999
+  after:content-[''] after:absolute after:bottom-0 after:right-0 after:h-[35px] after:w-[35px] after:translate-x-2.5 after:translate-y-2.5 after:rounded-[50px] after:bg-[#ffffff15] after:backdrop-blur-[5px] after:transition-all after:duration-400 after:-z-99999
+  hover:before:translate-x-[5%] hover:before:translate-y-[20%] hover:before:h-[110%] hover:before:w-[110%]
+  hover:after:translate-x-0 hover:after:translate-y-0 hover:after:h-full hover:after:w-full hover:after:rounded-[10px]
+  active:after:translate-y-[5%] active:after:transition-none"
+                  onClick={() => handelDelte(note._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {editNote && (
+        <EditModelNote
+          note={editNote}
+          onUpdate={handleEdit}
+          onClose={() => setEditNote(null)}
+        />
+      )}
     </div>
-    
   );
 };
 

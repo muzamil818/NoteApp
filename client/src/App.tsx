@@ -6,7 +6,8 @@ import Notes from "./pages/Notes"
 
 const App = () => {
   return (
-    <div className="w-full h-screen bg-[#758A93]">
+    //bg-[#758A93]
+    <div className="w-full h-screen bg-gray-600 ">
       <BrowserRouter>
       <Nav/>
         <Routes>
