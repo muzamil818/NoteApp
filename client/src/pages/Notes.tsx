@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaEdit } from "react-icons/fa";
+// import { FaEdit } from "react-icons/fa";
+import { TbPinned } from "react-icons/tb";
 import EditModelNote from "../components/EditModelNote";
-
+import { FiDelete } from "react-icons/fi";
 interface notes {
   _id: string;
   title: string;
   content: string;
+  pinned: boolean;
 }
 
 const Notes = () => {
@@ -83,6 +85,29 @@ const Notes = () => {
   const handleEdit = (update: notes) => {
     setNotes((pre) => pre.map((n) => (n._id == update._id ? update : n)));
   };
+
+  const handleToggle = async (id: string, currentPinned: boolean) => {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("You are not Authorized! ");
+
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URI}/note/${id}`,
+        { pinned: !currentPinned },
+        {
+          headers: {
+            Authorization: `Bearer  ${token}`,
+          },
+        }
+      );
+
+      setNotes((prev) =>
+        prev.map((n) => (n._id === id ? { ...n, pinned: res.data.pinned } : n))
+      );
+    } catch (err) {
+      console.error(`put api/note/pinned it is causing an error ${err}`);
+    }
+  };
   return (
     <div className="">
       <div className="flex items-center justify-center mt-16">
@@ -128,13 +153,19 @@ const Notes = () => {
         <div className="items justify-center ml-3 flex flex-wrap gap-3  p-16 ">
           {notes.map((note) => (
             <div
+             
               className="w-[300px] h-[200px] bg-[#112d3d] relative rounded shadow"
               key={note._id}
             >
-              <FaEdit
-                className=" absolute right-0 text-[#54aad1] cursor-pointer transition-all text-2xl"
-                onClick={() => setEditNote(note)}
+              <TbPinned
+                className=" absolute left-0 -top-3 text-[#969900] cursor-pointer transition-all text-2xl "
+                onClick={() => handleToggle(note._id, note.pinned)}
               />
+              {/* <FaEdit
+                className=" absolute right-7 text-[#54aad1] cursor-pointer transition-all text-2xl"
+                onClick={() => setEditNote(note)}
+              /> */}
+              <FiDelete  className="absolute cursor-pointer right-0 text-[#a33f29] text-2xl" onClick={() => handelDelte(note._id)}/>
               <h1 className="text-2xl p-3 text-white">{note.title}</h1>
               <p className="text-white p-3">{note.content}</p>
 
@@ -146,9 +177,9 @@ const Notes = () => {
   hover:before:translate-x-[5%] hover:before:translate-y-[20%] hover:before:h-[110%] hover:before:w-[110%]
   hover:after:translate-x-0 hover:after:translate-y-0 hover:after:h-full hover:after:w-full hover:after:rounded-[10px]
   active:after:translate-y-[5%] active:after:transition-none"
-                  onClick={() => handelDelte(note._id)}
+                 onClick={() => setEditNote(note)}
                 >
-                  Delete
+                  Edit
                 </button>
               </div>
             </div>
@@ -159,7 +190,7 @@ const Notes = () => {
       {editNote && (
         <EditModelNote
           note={editNote}
-          onUpdate={handleEdit}
+          onUpdate={() => handleEdit}
           onClose={() => setEditNote(null)}
         />
       )}

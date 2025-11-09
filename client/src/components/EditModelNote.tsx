@@ -7,12 +7,13 @@ interface EditProps {
     _id: string;
     title: string;
     content: string;
+  
   };
   onClose: () => void;
-  onUpdate: (updateNote: { _id: string; title: string; content: string }) => void;
+  onUpdate: (updateNote: { _id: string; title: string; content: string}) => void;
 }
 
-const EditModelNote: React.FC<EditProps> = ({ note, onClose, onUpdate }) => {
+const EditModelNote: React.FC<EditProps> = ({ note, onClose, onUpdate,  }) => {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
 

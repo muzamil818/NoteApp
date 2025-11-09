@@ -23,7 +23,7 @@ const Nav = () => {
       <div className="text-white">
         <h1 className="text-3xl cursor-pointer">Notify</h1>
       </div>
-      <div className="text-white flex gap-6 *:hover:underline *:decoration-wavy *:decoration-2 *:transition-all:0.5s *:cursor-pointer">
+      <div className="text-white flex gap-6  *:decoration-2 *:transition-all:0.5s *:cursor-pointer">
         <Link className="px-4 py-1 text-center " to="/">Home</Link>
         {isLogged ? (
           <>
